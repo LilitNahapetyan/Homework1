@@ -16,6 +16,16 @@ namespace Homework1.Controllers
             new() { Id = 5,  FirstName = "Frederick", LastName = "Varley",  }
         ];
 
+        [HttpGet("{id:int}")]
+        public ActionResult<User> GetUserById(int id)
+        {
+            var user = users.FirstOrDefault(u => u.Id == id);
+            if (user == null)
+                return NotFound(new { message = "User not found" });
+
+            return Ok(user);
+        }
+
         // POST: api/users
         [HttpPost]
         public ActionResult<User> CreateUser([FromBody] User newUser)
@@ -26,7 +36,7 @@ namespace Homework1.Controllers
             newUser.Id = users.Count + 1;
             users.Add(newUser);
 
-            return CreatedAtAction(nameof(CreateUser), new { id = newUser.Id }, newUser);
+            return CreatedAtAction(nameof(GetUserById), new { id = newUser.Id });
         }
 
         // PUT: api/users/5

@@ -43,17 +43,17 @@ namespace Homework1.Controllers
             return Ok(post);
         }
 
+
         // DELETE: api/posts/3
         [HttpDelete("{id:int}")]
-        public ActionResult DeletePost(int id)
+        public ActionResult DeletePost(int id) 
         {
             var post = posts.FirstOrDefault(p => p.Id == id);
 
-            if (post == null)
-                return NotFound(new { message = "Post not found" });
+            if (post != null)
+                posts.Remove(post);
 
-            posts.Remove(post);
-            return Ok(new { message = "Post deleted successfully" });
+            return NoContent(); 
         }
     }
 }
