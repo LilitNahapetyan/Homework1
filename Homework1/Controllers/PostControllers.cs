@@ -1,6 +1,7 @@
 ﻿using Homework1.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Net;
 using System.Text.Json;
 
 namespace Homework1.Controllers
@@ -13,15 +14,11 @@ namespace Homework1.Controllers
         private readonly ApiSettings _apiSettings;
         private readonly JsonSerializerOptions _jsonOptions;
 
-        public PostsController(HttpClient httpClient, IOptions<ApiSettings> apiSettings, IOptions<JsonOptions> jsonOptions)
+        public PostsController(HttpClient httpClient, IOptions<ApiSettings> apiSettings, JsonSerializerOptions jsonSerializerOptions)
         {
             _httpClient = httpClient;
             _apiSettings = apiSettings.Value;
-            _jsonOptions = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = jsonOptions.Value.PropertyNameCaseInsensitive,
-                WriteIndented = jsonOptions.Value.WriteIndented
-            };
+            _jsonOptions = jsonSerializerOptions;
         }
 
         // GET: api/posts?userId=1&title=understanding%20the%20basics
@@ -59,16 +56,17 @@ namespace Homework1.Controllers
             return Ok(post);
         }
 
-        // DELETE: api/posts/3
+
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeletePost(int id)
         {
             var url = $"{_apiSettings.JsonPlaceholderBaseUrl}/{id}";
             var response = await _httpClient.DeleteAsync(url);
-            if (!response.IsSuccessStatusCode)
-                return NotFound(new { message = "Post not found" });
 
-            return NoContent();
+            if (response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.NotFound)
+                return NoContent();
+
+            return StatusCode((int)response.StatusCode, new { message = "Unexpected error during delete" });
         }
     }
 }

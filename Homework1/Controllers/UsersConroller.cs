@@ -14,21 +14,17 @@ namespace Homework1.Controllers
         private readonly ApiSettings _apiSettings;
         private readonly JsonSerializerOptions _jsonOptions;
 
-        public UsersController(HttpClient httpClient, IOptions<ApiSettings> apiSettings, IOptions<JsonOptions> jsonOptions)
+        public UsersController(HttpClient httpClient, IOptions<ApiSettings> apiSettings, JsonSerializerOptions jsonSerializerOptions)
         {
             _httpClient = httpClient;
             _apiSettings = apiSettings.Value;
-            _jsonOptions = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = jsonOptions.Value.PropertyNameCaseInsensitive,
-                WriteIndented = jsonOptions.Value.WriteIndented
-            };
+            _jsonOptions = jsonSerializerOptions;
         }
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<User>> GetUserById(int id)
         {
-            var response = await _httpClient.GetAsync($"{_apiSettings.ReqresBaseUrl}/{id}");
+            var response = await _httpClient.GetAsync($"{_apiSettings.ReqresBaseUrl}{id}");
             if (!response.IsSuccessStatusCode)
                 return NotFound(new { message = "User not found" });
 
