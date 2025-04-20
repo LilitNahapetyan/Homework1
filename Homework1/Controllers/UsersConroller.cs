@@ -1,6 +1,7 @@
 ﻿using Homework1.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Serilog;
 using System.Text;
 using System.Text.Json;
 
@@ -43,16 +44,39 @@ namespace Homework1.Controllers
             if (newUser == null)
                 return BadRequest("Invalid user data");
 
+            var existingUsersResponse = await _httpClient.GetAsync(_apiSettings.ReqresBaseUrl);
+            if (!existingUsersResponse.IsSuccessStatusCode)
+                return StatusCode((int)existingUsersResponse.StatusCode, new { message = "Error fetching existing users" });
+
+            var usersWrapper = await DeserializeResponse<UsersResponse>(existingUsersResponse);
+            var existingUsers = usersWrapper?.Data;
+
+            if (existingUsers != null && existingUsers.Any(u => u.First_Name == newUser.First_Name && u.Last_Name == newUser.Last_Name))
+            {
+                throw new DuplicateUserNameException("A user with the same name already exists.");
+            }
+
             var response = await _httpClient.PostAsync(_apiSettings.ReqresBaseUrl, SerializeContent(newUser));
             if (!response.IsSuccessStatusCode)
                 return StatusCode((int)response.StatusCode, new { message = "Error creating user" });
 
-            var createdUser = await DeserializeResponse<User>(response);
-            if (createdUser == null)
-                return StatusCode(500, new { message = "Error deserializing created user data" });
+            // Simulate user creation by adding a mock ID and setting createdAt timestamp
+            var createdUser = new User
+            {
+                Id = 72,  
+                First_Name = newUser.First_Name,
+                Last_Name = newUser.Last_Name,
+                Email = newUser.Email,
+                Avatar = newUser.Avatar,
+            };
 
+            // Simulate logging the creation
+            Log.Information("User successfully added: {@User}", createdUser);
+
+            // Return the simulated created user
             return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
         }
+
 
         [HttpPut("{id:int}")]
         public async Task<ActionResult<User>> UpdateUser(int id, [FromBody] User updatedUser)
@@ -61,8 +85,7 @@ namespace Homework1.Controllers
             if (!response.IsSuccessStatusCode)
                 return StatusCode((int)response.StatusCode, new { message = "Error updating user" });
 
-            var userWrapper = await DeserializeResponse<UserResponse>(response);
-            var user = userWrapper?.Data;
+            var user = await DeserializeResponse<User>(response);
             if (user == null)
                 return StatusCode(500, new { message = "Error deserializing updated user data" });
 
