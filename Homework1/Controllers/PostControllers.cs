@@ -1,6 +1,8 @@
 ﻿using Homework1.Models;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Extensions.Options;
+using System.Net;
+using System.Text.Json;
 
 namespace Homework1.Controllers
 {
@@ -8,22 +10,30 @@ namespace Homework1.Controllers
     [ApiController]
     public class PostsController : ControllerBase
     {
-        private static readonly List<Post> posts = new()
+        private readonly HttpClient _httpClient;
+        private readonly ApiSettings _apiSettings;
+        private readonly JsonSerializerOptions _jsonOptions;
+
+        public PostsController(HttpClient httpClient, IOptions<ApiSettings> apiSettings, JsonSerializerOptions jsonSerializerOptions)
         {
-            new() { UserId = 1, Id = 1, Title = "qui est esse" ,Body = "est rerum tempore vitae sequi sint nihil reprehenderit dolor beatae ea dolores neque fugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis qui aperiam non debitis possimus qui neque nisi nulla"  },
-            new() { UserId = 2, Id= 11, Title = "et ea vero quia laudantium autem", Body = "delectus reiciendis molestiae occaecati non minima eveniet qui voluptatibus accusamus in eum beatae sit vel qui neque voluptates ut commodi qui incidunt ut animi commodi"        },
-            new() { UserId = 3, Id= 22, Title= "dolor sint quo a velit explicabo quia nam",Body= "eos qui et ipsum ipsam suscipit aut sed omnis non odio expedita earum mollitia molestiae aut atque rem suscipit nam impedit esse"}
-        };
+            _httpClient = httpClient;
+            _apiSettings = apiSettings.Value;
+            _jsonOptions = jsonSerializerOptions;
+        }
 
         // GET: api/posts?userId=1&title=understanding%20the%20basics
         [HttpGet]
-        public ActionResult<IEnumerable<Post>> GetPosts([FromQuery] int userId, [FromQuery] string title)
+        public async Task<ActionResult<IEnumerable<Post>>> GetPosts([FromQuery] int userId, [FromQuery] string title)
         {
-            var filteredPosts = posts
-                .Where(p => p.UserId == userId && p.Title.ToLower().Contains(title.ToLower()))
-                .ToList();
+            var url = $"{_apiSettings.JsonPlaceholderBaseUrl}?userId={userId}&title={Uri.EscapeDataString(title)}";
+            var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+                return NotFound(new { message = "Posts not found" });
 
-            if (filteredPosts.Count == 0)
+            var content = await response.Content.ReadAsStringAsync();
+            var filteredPosts = JsonSerializer.Deserialize<List<Post>>(content, _jsonOptions);
+
+            if (filteredPosts == null || filteredPosts.Count == 0)
             {
                 return NoContent();
             }
@@ -33,27 +43,30 @@ namespace Homework1.Controllers
 
         // GET: api/posts/3
         [HttpGet("{id:int}")]
-        public ActionResult<Post> GetPost(int id)
+        public async Task<ActionResult<Post>> GetPost(int id)
         {
-            var post = posts.FirstOrDefault(p => p.Id == id);
-
-            if (post == null)
+            var url = $"{_apiSettings.JsonPlaceholderBaseUrl}/{id}";
+            var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
                 return NotFound(new { message = "Post not found" });
+
+            var content = await response.Content.ReadAsStringAsync();
+            var post = JsonSerializer.Deserialize<Post>(content, _jsonOptions);
 
             return Ok(post);
         }
 
 
-        // DELETE: api/posts/3
         [HttpDelete("{id:int}")]
-        public ActionResult DeletePost(int id) 
+        public async Task<ActionResult> DeletePost(int id)
         {
-            var post = posts.FirstOrDefault(p => p.Id == id);
+            var url = $"{_apiSettings.JsonPlaceholderBaseUrl}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
 
-            if (post != null)
-                posts.Remove(post);
+            if (response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.NotFound)
+                return NoContent();
 
-            return NoContent(); 
+            return StatusCode((int)response.StatusCode, new { message = "Unexpected error during delete" });
         }
     }
 }
