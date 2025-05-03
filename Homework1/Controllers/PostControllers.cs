@@ -1,4 +1,5 @@
 ﻿using Homework1.Models;
+using Homework1.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Net;
@@ -36,12 +37,10 @@ namespace Homework1.Controllers
             if (filteredPosts == null || filteredPosts.Count == 0)
             {
                 return NoContent();
-            }
 
-            return Ok(filteredPosts);
+            return Ok(posts);
         }
 
-        // GET: api/posts/3
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Post>> GetPost(int id)
         {
