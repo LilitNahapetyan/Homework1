@@ -146,3 +146,104 @@
 2025-05-09 21:55:53.647 +04:00 [INF] Executed action UserFormController.GetForm (Homework1) in 19.9839ms
 2025-05-09 21:55:53.647 +04:00 [INF] Executed endpoint 'UserFormController.GetForm (Homework1)'
 2025-05-09 21:55:53.647 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/api/UserForm/1 - 200 167 application/json; charset=utf-8 21.8288ms
+2025-05-10 01:25:27.310 +04:00 [INF] Now listening on: https://localhost:7088
+2025-05-10 01:25:27.321 +04:00 [INF] Now listening on: http://localhost:5057
+2025-05-10 01:25:27.400 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-05-10 01:25:27.401 +04:00 [INF] Hosting environment: Development
+2025-05-10 01:25:27.401 +04:00 [INF] Content root path: C:\Users\Lilit\source\repos\Homework1\Homework1
+2025-05-10 01:25:28.158 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/swagger/index.html - null null
+2025-05-10 01:25:28.394 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/_vs/browserLink - null null
+2025-05-10 01:25:28.394 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/_framework/aspnetcore-browser-refresh.js - null null
+2025-05-10 01:25:28.404 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/_framework/aspnetcore-browser-refresh.js - 200 16503 application/javascript; charset=utf-8 9.2797ms
+2025-05-10 01:25:28.406 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/swagger/index.html - 200 null text/html;charset=utf-8 249.4177ms
+2025-05-10 01:25:28.450 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/_vs/browserLink - 200 null text/javascript; charset=UTF-8 55.8988ms
+2025-05-10 01:25:28.637 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/swagger/v1/swagger.json - null null
+2025-05-10 01:25:28.686 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 48.649ms
+2025-05-10 01:25:37.662 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/api/posts/1 - null null
+2025-05-10 01:25:37.697 +04:00 [INF] Executing endpoint 'Homework1.Controllers.PostsController.GetPost (Homework1)'
+2025-05-10 01:25:37.772 +04:00 [INF] Route matched with {action = "GetPost", controller = "Posts"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Homework1.Models.Post]] GetPost(Int32) on controller Homework1.Controllers.PostsController (Homework1).
+2025-05-10 01:25:37.884 +04:00 [INF] Start processing HTTP request GET https://jsonplaceholder.typicode.com/posts//1
+2025-05-10 01:25:37.888 +04:00 [INF] Sending HTTP request GET https://jsonplaceholder.typicode.com/posts//1
+2025-05-10 01:25:38.181 +04:00 [INF] Received HTTP response headers after 283.8891ms - 200
+2025-05-10 01:25:38.184 +04:00 [INF] End processing HTTP request after 307.8633ms - 200
+2025-05-10 01:25:38.229 +04:00 [INF] Executing OkObjectResult, writing value of type 'Homework1.Models.Post'.
+2025-05-10 01:25:38.611 +04:00 [INF] Executed action Homework1.Controllers.PostsController.GetPost (Homework1) in 830.6715ms
+2025-05-10 01:25:38.613 +04:00 [INF] Executed endpoint 'Homework1.Controllers.PostsController.GetPost (Homework1)'
+2025-05-10 01:25:38.616 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/api/posts/1 - 200 275 application/json; charset=utf-8 954.6827ms
+2025-05-10 01:25:48.175 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/api/users/1 - null null
+2025-05-10 01:25:48.179 +04:00 [INF] Executing endpoint 'Homework1.Controllers.UsersController.GetUserById (Homework1)'
+2025-05-10 01:25:48.189 +04:00 [INF] Route matched with {action = "GetUserById", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Homework1.Models.User]] GetUserById(Int32) on controller Homework1.Controllers.UsersController (Homework1).
+2025-05-10 01:25:48.221 +04:00 [INF] Start processing HTTP request GET https://reqres.in/api/users/1
+2025-05-10 01:25:48.221 +04:00 [INF] Sending HTTP request GET https://reqres.in/api/users/1
+2025-05-10 01:25:49.041 +04:00 [INF] Received HTTP response headers after 819.0802ms - 200
+2025-05-10 01:25:49.042 +04:00 [INF] End processing HTTP request after 821.1485ms - 200
+2025-05-10 01:25:49.052 +04:00 [INF] Executing OkObjectResult, writing value of type 'Homework1.Models.User'.
+2025-05-10 01:25:49.060 +04:00 [INF] Executed action Homework1.Controllers.UsersController.GetUserById (Homework1) in 869.9992ms
+2025-05-10 01:25:49.060 +04:00 [INF] Executed endpoint 'Homework1.Controllers.UsersController.GetUserById (Homework1)'
+2025-05-10 01:25:49.060 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/api/users/1 - 200 134 application/json; charset=utf-8 885.4271ms
+2025-05-10 01:27:55.675 +04:00 [INF] Now listening on: https://localhost:7088
+2025-05-10 01:27:55.686 +04:00 [INF] Now listening on: http://localhost:5057
+2025-05-10 01:27:55.762 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-05-10 01:27:55.762 +04:00 [INF] Hosting environment: Development
+2025-05-10 01:27:55.763 +04:00 [INF] Content root path: C:\Users\Lilit\source\repos\Homework1\Homework1
+2025-05-10 01:27:56.300 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/swagger/index.html - null null
+2025-05-10 01:27:56.552 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/swagger/index.html - 200 null text/html;charset=utf-8 260.7246ms
+2025-05-10 01:27:56.568 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/_vs/browserLink - null null
+2025-05-10 01:27:56.568 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/_framework/aspnetcore-browser-refresh.js - null null
+2025-05-10 01:27:56.581 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/_framework/aspnetcore-browser-refresh.js - 200 16503 application/javascript; charset=utf-8 12.407ms
+2025-05-10 01:27:56.631 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/_vs/browserLink - 200 null text/javascript; charset=UTF-8 63.0317ms
+2025-05-10 01:27:56.795 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/swagger/v1/swagger.json - null null
+2025-05-10 01:27:56.847 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 52.4491ms
+2025-05-10 01:28:05.905 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/api/users/1 - null null
+2025-05-10 01:28:05.949 +04:00 [INF] Executing endpoint 'Homework1.Controllers.UsersController.GetUserById (Homework1)'
+2025-05-10 01:28:06.023 +04:00 [INF] Route matched with {action = "GetUserById", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Homework1.Models.User]] GetUserById(Int32) on controller Homework1.Controllers.UsersController (Homework1).
+2025-05-10 01:28:06.101 +04:00 [INF] Start processing HTTP request GET https://reqres.in/api/users/1
+2025-05-10 01:28:06.104 +04:00 [INF] Sending HTTP request GET https://reqres.in/api/users/1
+2025-05-10 01:28:06.247 +04:00 [INF] Received HTTP response headers after 134.2108ms - 200
+2025-05-10 01:28:06.249 +04:00 [INF] End processing HTTP request after 155.6929ms - 200
+2025-05-10 01:28:06.282 +04:00 [INF] Executing OkObjectResult, writing value of type 'Homework1.Models.User'.
+2025-05-10 01:28:06.646 +04:00 [INF] Executed action Homework1.Controllers.UsersController.GetUserById (Homework1) in 612.4181ms
+2025-05-10 01:28:06.647 +04:00 [INF] Executed endpoint 'Homework1.Controllers.UsersController.GetUserById (Homework1)'
+2025-05-10 01:28:06.649 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/api/users/1 - 200 134 application/json; charset=utf-8 746.0572ms
+2025-05-10 01:39:57.577 +04:00 [INF] Now listening on: https://localhost:7088
+2025-05-10 01:39:57.585 +04:00 [INF] Now listening on: http://localhost:5057
+2025-05-10 01:39:57.641 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-05-10 01:39:57.642 +04:00 [INF] Hosting environment: Development
+2025-05-10 01:39:57.642 +04:00 [INF] Content root path: C:\Users\Lilit\source\repos\Homework1\Homework1
+2025-05-10 01:39:58.626 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/swagger/index.html - null null
+2025-05-10 01:39:58.858 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/_framework/aspnetcore-browser-refresh.js - null null
+2025-05-10 01:39:58.865 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/_vs/browserLink - null null
+2025-05-10 01:39:58.869 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/_framework/aspnetcore-browser-refresh.js - 200 16503 application/javascript; charset=utf-8 8.6528ms
+2025-05-10 01:39:58.869 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/swagger/index.html - 200 null text/html;charset=utf-8 251.0782ms
+2025-05-10 01:39:58.914 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/_vs/browserLink - 200 null text/javascript; charset=UTF-8 49.0065ms
+2025-05-10 01:39:59.091 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/swagger/v1/swagger.json - null null
+2025-05-10 01:39:59.133 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 43.6607ms
+2025-05-10 01:40:06.970 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/api/posts/1 - null null
+2025-05-10 01:40:07.004 +04:00 [INF] Executing endpoint 'Homework1.Controllers.PostsController.GetPost (Homework1)'
+2025-05-10 01:40:07.075 +04:00 [INF] Route matched with {action = "GetPost", controller = "Posts"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Homework1.Models.Post]] GetPost(Int32) on controller Homework1.Controllers.PostsController (Homework1).
+2025-05-10 01:40:07.191 +04:00 [INF] Start processing HTTP request GET https://jsonplaceholder.typicode.com/posts//1
+2025-05-10 01:40:07.195 +04:00 [INF] Sending HTTP request GET https://jsonplaceholder.typicode.com/posts//1
+2025-05-10 01:40:07.484 +04:00 [INF] Received HTTP response headers after 281.2624ms - 200
+2025-05-10 01:40:07.486 +04:00 [INF] End processing HTTP request after 301.9242ms - 200
+2025-05-10 01:40:07.533 +04:00 [INF] Executing OkObjectResult, writing value of type 'Homework1.Models.Post'.
+2025-05-10 01:40:07.899 +04:00 [INF] Executed action Homework1.Controllers.PostsController.GetPost (Homework1) in 814.7209ms
+2025-05-10 01:40:07.901 +04:00 [INF] Executed endpoint 'Homework1.Controllers.PostsController.GetPost (Homework1)'
+2025-05-10 01:40:07.903 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/api/posts/1 - 200 275 application/json; charset=utf-8 935.3555ms
+2025-05-10 01:40:16.708 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/api/Registration/1 - null null
+2025-05-10 01:40:16.712 +04:00 [INF] Executing endpoint 'RegistrationController.GetForm (Homework1)'
+2025-05-10 01:40:16.719 +04:00 [INF] Route matched with {action = "GetForm", controller = "Registration"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[Homework1.Models.UserFormModel] GetForm(Int32) on controller RegistrationController (Homework1).
+2025-05-10 01:40:16.725 +04:00 [INF] Executing OkObjectResult, writing value of type 'Homework1.Models.UserFormModel'.
+2025-05-10 01:40:16.741 +04:00 [INF] Executed action RegistrationController.GetForm (Homework1) in 21.8042ms
+2025-05-10 01:40:16.741 +04:00 [INF] Executed endpoint 'RegistrationController.GetForm (Homework1)'
+2025-05-10 01:40:16.742 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/api/Registration/1 - 200 156 application/json; charset=utf-8 33.9035ms
+2025-05-10 01:40:27.956 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7088/api/users/1 - null null
+2025-05-10 01:40:27.957 +04:00 [INF] Executing endpoint 'Homework1.Controllers.UsersController.GetUserById (Homework1)'
+2025-05-10 01:40:27.968 +04:00 [INF] Route matched with {action = "GetUserById", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Homework1.Models.User]] GetUserById(Int32) on controller Homework1.Controllers.UsersController (Homework1).
+2025-05-10 01:40:27.979 +04:00 [INF] Start processing HTTP request GET https://reqres.in/api/users/1
+2025-05-10 01:40:27.979 +04:00 [INF] Sending HTTP request GET https://reqres.in/api/users/1
+2025-05-10 01:40:28.329 +04:00 [INF] Received HTTP response headers after 349.4324ms - 200
+2025-05-10 01:40:28.329 +04:00 [INF] End processing HTTP request after 350.5806ms - 200
+2025-05-10 01:40:28.340 +04:00 [INF] Executing OkObjectResult, writing value of type 'Homework1.Models.User'.
+2025-05-10 01:40:28.353 +04:00 [INF] Executed action Homework1.Controllers.UsersController.GetUserById (Homework1) in 384.7099ms
+2025-05-10 01:40:28.354 +04:00 [INF] Executed endpoint 'Homework1.Controllers.UsersController.GetUserById (Homework1)'
+2025-05-10 01:40:28.354 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7088/api/users/1 - 200 134 application/json; charset=utf-8 397.774ms

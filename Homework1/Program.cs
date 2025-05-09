@@ -1,4 +1,5 @@
-﻿using Homework1;
+﻿using Hellang.Middleware.ProblemDetails;
+using Homework1;
 using Homework1.Controllers;
 using Homework1.Services;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
@@ -10,13 +11,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddSwaggerGen();
-builder.Services.AddHttpClient<PostsController>();
+
 builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
-builder.Services.AddScoped<IPostService, PostService>();
-builder.Services.AddHttpClient<UsersController>(client =>
-{
+builder.Services.AddHttpClient<IPostService, PostService>();
+builder.Services.AddHttpClient<IUserService, UserService>(client => {
     client.DefaultRequestHeaders.Add("x-api-key", "reqres-free-v1");
 });
+
 builder.Services.AddSingleton(sp =>
 {
     return new JsonSerializerOptions
@@ -37,44 +38,24 @@ builder.Host.UseSerilog((context, loggerConfig) =>
     );
 });
 
+builder.Services.AddProblemDetails(options =>
+{
+    options.Map<DuplicateUserNameException>(ex => new ProblemDetails
+    {
+        Status = StatusCodes.Status400BadRequest,
+        Title = "Duplicate user",
+        Detail = ex.Message,
+        Type = "https://httpstatuses.com/400"
+    });
+
+    options.MapToStatusCode<Exception>(StatusCodes.Status500InternalServerError);
+});
+
 
 var app = builder.Build();
 
+app.UseProblemDetails();
 
-
-app.UseExceptionHandler(errorApp =>
-{
-    errorApp.Run(async context =>
-    {
-        var exceptionFeature = context.Features.Get<IExceptionHandlerPathFeature>();
-        var exception = exceptionFeature?.Error;
-
-        context.Response.ContentType = "application/problem+json";
-        var problemDetails = new ProblemDetails
-        {
-            Instance = context.Request.Path,
-            Detail = exception?.Message
-        };
-
-        if (exception is DuplicateUserNameException)
-        {
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            problemDetails.Status = StatusCodes.Status400BadRequest;
-            problemDetails.Title = "Duplicate user";
-            problemDetails.Type = "https://httpstatuses.com/400";
-        }
-        else
-        {
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            problemDetails.Status = StatusCodes.Status500InternalServerError;
-            problemDetails.Title = "An unexpected error occurred.";
-            problemDetails.Type = "https://httpstatuses.com/500";
-        }
-
-        Log.Error(exception, "Exception caught: {Message}", exception?.Message);
-        await context.Response.WriteAsJsonAsync(problemDetails);
-    });
-});
 
 if (app.Environment.IsDevelopment())
 {

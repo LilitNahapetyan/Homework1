@@ -1,4 +1,5 @@
 ﻿using Homework1.Models;
+using Homework1.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Serilog;
@@ -7,37 +8,23 @@ using System.Text.Json;
 
 namespace Homework1.Controllers
 {
-    [Route("api/users")]
     [ApiController]
+    [Route("api/users")]
     public class UsersController : ControllerBase
     {
-        private readonly HttpClient _httpClient;
-        private readonly ApiSettings _apiSettings;
-        private readonly JsonSerializerOptions _jsonOptions;
+        private readonly IUserService _userService;
 
-        public UsersController(HttpClient httpClient, IOptions<ApiSettings> apiSettings, JsonSerializerOptions jsonSerializerOptions)
+        public UsersController(IUserService userService)
         {
-            _httpClient = httpClient;
-            _apiSettings = apiSettings.Value;
-            _jsonOptions = jsonSerializerOptions;
-
-            this._httpClient.DefaultRequestHeaders.Add("x-api-key", "reqres-free-v1");
-
+            _userService = userService;
         }
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<User>> GetUserById(int id)
         {
-            var url = $"{_apiSettings.ReqresBaseUrl}{id}";
-            var response = await _httpClient.GetAsync(url);
-            if (!response.IsSuccessStatusCode)
-                return NotFound(new { message = "User not found" });
-
-            var userWrapper = await DeserializeResponse<UserResponse>(response);
-            var user = userWrapper?.Data;
-
+            var user = await _userService.GetUserByIdAsync(id);
             if (user == null)
-                return StatusCode(500, new { message = "Error deserializing user data" });
+                return NotFound(new { message = "User not found" });
 
             return Ok(user);
         }
@@ -48,64 +35,29 @@ namespace Homework1.Controllers
             if (newUser == null)
                 return BadRequest("Invalid user data");
 
-            var existingUsersResponse = await _httpClient.GetAsync(_apiSettings.ReqresBaseUrl);
-            if (!existingUsersResponse.IsSuccessStatusCode)
-                return StatusCode((int)existingUsersResponse.StatusCode, new { message = "Error fetching existing users" });
-
-            var usersWrapper = await DeserializeResponse<UsersResponse>(existingUsersResponse);
-            var existingUsers = usersWrapper?.Data;
-
-            if (existingUsers != null && existingUsers.Any(u =>
-                string.Equals(u.First_Name, newUser.First_Name, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(u.Last_Name, newUser.Last_Name, StringComparison.OrdinalIgnoreCase)))
+            try
             {
-                throw new DuplicateUserNameException("A user with the same name already exists.");
+                var createdUser = await _userService.CreateUserAsync(newUser);
+                if (createdUser == null)
+                    return StatusCode(500, new { message = "Error creating user" });
+
+                return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
             }
-
-
-            var response = await _httpClient.PostAsync(_apiSettings.ReqresBaseUrl, SerializeContent(newUser));
-            if (!response.IsSuccessStatusCode)
-                return StatusCode((int)response.StatusCode, new { message = "Error creating user" });
-
-            // Simulate user creation by adding a mock ID and setting createdAt timestamp
-            var createdUser = new User
+            catch (DuplicateUserNameException ex)
             {
-                Id = 72,  
-                First_Name = newUser.First_Name,
-                Last_Name = newUser.Last_Name,
-                Email = newUser.Email,
-                Avatar = newUser.Avatar,
-            };
-
-            // Simulate logging the creation
-            Log.Information("User successfully added: {@User}", createdUser);
-
-            // Return the simulated created user
-            return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
+                return Conflict(new { message = ex.Message });
+            }
         }
-
 
         [HttpPut("{id:int}")]
         public async Task<ActionResult<User>> UpdateUser(int id, [FromBody] User updatedUser)
         {
-            var response = await _httpClient.PutAsync($"{_apiSettings.ReqresBaseUrl}/{id}", SerializeContent(updatedUser));
-            if (!response.IsSuccessStatusCode)
-                return StatusCode((int)response.StatusCode, new { message = "Error updating user" });
-
-            var user = await DeserializeResponse<User>(response);
+            var user = await _userService.UpdateUserAsync(id, updatedUser);
             if (user == null)
-                return StatusCode(500, new { message = "Error deserializing updated user data" });
+                return StatusCode(500, new { message = "Error updating user" });
 
             return Ok(user);
         }
-
-        private StringContent SerializeContent<T>(T obj) =>
-            new(JsonSerializer.Serialize(obj, _jsonOptions), Encoding.UTF8, "application/json");
-
-        private async Task<T?> DeserializeResponse<T>(HttpResponseMessage response)
-        {
-            var content = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<T>(content, _jsonOptions);
-        }
     }
+
 }

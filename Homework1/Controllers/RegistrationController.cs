@@ -1,18 +1,16 @@
 ﻿using Homework1.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserFormController : ControllerBase
+public class RegistrationController : ControllerBase
 {
     private static List<UserFormModel> _userForms = new List<UserFormModel>
 {
     new UserFormModel
     {
-        Id = 1,  
+        Id = 1,
         Username = "Ani85",
         Email = "ani@example.com",
         Password = "AniStrong!85",
@@ -23,7 +21,7 @@ public class UserFormController : ControllerBase
     },
     new UserFormModel
     {
-        Id = 2,  
+        Id = 2,
         Username = "Gor_2000",
         Email = "gor@example.com",
         Password = "Gor@2000pass",
@@ -34,7 +32,7 @@ public class UserFormController : ControllerBase
     },
     new UserFormModel
     {
-        Id = 3,  
+        Id = 3,
         Username = "Mariam",
         Email = "mariam@example.com",
         Password = "Mari@1234",
@@ -47,9 +45,9 @@ public class UserFormController : ControllerBase
 
 
     [HttpGet("{id}")]
-    public IActionResult GetForm(int id)
+    public ActionResult<UserFormModel> GetForm(int id)
     {
-        var model = _userForms.FirstOrDefault(f => f.Id == id);  
+        var model = _userForms.FirstOrDefault(f => f.Id == id);
         if (model == null)
             return NotFound($"User form with ID {id} not found.");
 
@@ -62,19 +60,24 @@ public class UserFormController : ControllerBase
         if (patchDoc == null)
             return BadRequest("Patch document is null.");
 
-        var model = _userForms.FirstOrDefault(f => f.Id == id);  
+        var model = _userForms.FirstOrDefault(f => f.Id == id);
         if (model == null)
             return NotFound($"User form with ID {id} not found.");
 
 
         patchDoc.ApplyTo(model, ModelState);
 
-        if (!TryValidateModel(model))  
+        if (!ModelState.IsValid)
         {
-            return NoContent();
+            return ValidationProblem(ModelState);
         }
 
-        return Ok(model);  
+        if (!TryValidateModel(model))
+        {
+            return ValidationProblem(ModelState);
+        }
+
+        return NoContent();
     }
 
 }
