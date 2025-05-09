@@ -38,9 +38,10 @@ namespace Homework1
             if (!password.Any(ch => !char.IsLetterOrDigit(ch)))
                 return new ValidationResult("Password must contain at least one symbol.");
 
-            if (!string.IsNullOrEmpty(username) && password.ToLower().Contains(username.ToLower()))
+            if (!string.IsNullOrEmpty(username) &&
+                password.Contains(username, StringComparison.OrdinalIgnoreCase))
                 return new ValidationResult("Password must not contain the username.");
-
+        
             return ValidationResult.Success;
         }
     }

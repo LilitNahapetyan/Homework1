@@ -4,6 +4,8 @@ namespace Homework1.Models
 {
     public class UserFormModel
     {
+        public int Id { get; set; }
+
         [Required]
         [MinLength(3, ErrorMessage = "Username must be at least 3 characters.")]
         public string Username { get; set; }
@@ -25,8 +27,8 @@ namespace Homework1.Models
         public int Quantity { get; set; }
 
         [Required]
-        [Range(typeof(decimal), "0.01", "999999999", ErrorMessage = "Price must be a decimal value.")]
-        public decimal Price { get; set; }
+        [RegularExpression(@"^\d+(\.\d{1,2})?$", ErrorMessage = "Price must be a valid decimal number.")]
+        public string Price { get; set; }
 
         [Required]
         [Range(0, 49, ErrorMessage = "Amount must be less than 50.")]

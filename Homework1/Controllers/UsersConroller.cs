@@ -20,12 +20,16 @@ namespace Homework1.Controllers
             _httpClient = httpClient;
             _apiSettings = apiSettings.Value;
             _jsonOptions = jsonSerializerOptions;
+
+            this._httpClient.DefaultRequestHeaders.Add("x-api-key", "reqres-free-v1");
+
         }
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<User>> GetUserById(int id)
         {
-            var response = await _httpClient.GetAsync($"{_apiSettings.ReqresBaseUrl}{id}");
+            var url = $"{_apiSettings.ReqresBaseUrl}{id}";
+            var response = await _httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
                 return NotFound(new { message = "User not found" });
 
@@ -51,10 +55,13 @@ namespace Homework1.Controllers
             var usersWrapper = await DeserializeResponse<UsersResponse>(existingUsersResponse);
             var existingUsers = usersWrapper?.Data;
 
-            if (existingUsers != null && existingUsers.Any(u => u.First_Name == newUser.First_Name && u.Last_Name == newUser.Last_Name))
+            if (existingUsers != null && existingUsers.Any(u =>
+                string.Equals(u.First_Name, newUser.First_Name, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(u.Last_Name, newUser.Last_Name, StringComparison.OrdinalIgnoreCase)))
             {
                 throw new DuplicateUserNameException("A user with the same name already exists.");
             }
+
 
             var response = await _httpClient.PostAsync(_apiSettings.ReqresBaseUrl, SerializeContent(newUser));
             if (!response.IsSuccessStatusCode)
