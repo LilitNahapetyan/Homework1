@@ -1,8 +1,6 @@
 ﻿using Homework1.Models;
+using Homework1.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using System.Net;
-using System.Text.Json;
 
 namespace Homework1.Controllers
 {
@@ -10,64 +8,41 @@ namespace Homework1.Controllers
     [ApiController]
     public class PostsController : ControllerBase
     {
-        private readonly HttpClient _httpClient;
-        private readonly ApiSettings _apiSettings;
-        private readonly JsonSerializerOptions _jsonOptions;
+        private readonly IPostService _postService;
 
-        public PostsController(HttpClient httpClient, IOptions<ApiSettings> apiSettings, JsonSerializerOptions jsonSerializerOptions)
+        public PostsController(IPostService postService)
         {
-            _httpClient = httpClient;
-            _apiSettings = apiSettings.Value;
-            _jsonOptions = jsonSerializerOptions;
+            _postService = postService;
         }
 
-        // GET: api/posts?userId=1&title=understanding%20the%20basics
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Post>>> GetPosts([FromQuery] int userId, [FromQuery] string title)
         {
-            var url = $"{_apiSettings.JsonPlaceholderBaseUrl}?userId={userId}&title={Uri.EscapeDataString(title)}";
-            var response = await _httpClient.GetAsync(url);
-            if (!response.IsSuccessStatusCode)
-                return NotFound(new { message = "Posts not found" });
-
-            var content = await response.Content.ReadAsStringAsync();
-            var filteredPosts = JsonSerializer.Deserialize<List<Post>>(content, _jsonOptions);
-
-            if (filteredPosts == null || filteredPosts.Count == 0)
-            {
+            var posts = await _postService.GetPostsAsync(userId, title);
+            if (!posts.Any())
                 return NoContent();
-            }
 
-            return Ok(filteredPosts);
+            return Ok(posts);
         }
 
-        // GET: api/posts/3
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Post>> GetPost(int id)
         {
-            var url = $"{_apiSettings.JsonPlaceholderBaseUrl}/{id}";
-            var response = await _httpClient.GetAsync(url);
-            if (!response.IsSuccessStatusCode)
+            var post = await _postService.GetPostAsync(id);
+            if (post == null)
                 return NotFound(new { message = "Post not found" });
-
-            var content = await response.Content.ReadAsStringAsync();
-            var post = JsonSerializer.Deserialize<Post>(content, _jsonOptions);
 
             return Ok(post);
         }
 
-
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeletePost(int id)
         {
-            var url = $"{_apiSettings.JsonPlaceholderBaseUrl}/{id}";
-            var response = await _httpClient.DeleteAsync(url);
+            var success = await _postService.DeletePostAsync(id);
+            if (!success)
+                return StatusCode(500, new { message = "Unexpected error during delete" });
 
-            if (response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.NotFound)
-                return NoContent();
-
-            return StatusCode((int)response.StatusCode, new { message = "Unexpected error during delete" });
+            return NoContent();
         }
     }
 }
-
